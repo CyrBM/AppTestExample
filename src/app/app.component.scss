@@ -1,0 +1,24 @@
+:host {
+  width: 100vh;
+  height: 100vh;
+}
+
+h1 {
+  margin-bottom: 0;
+  padding-left: 1rem;
+}
+
+mat-drawer {
+  min-width: 20rem;
+}
+.full-width-height {
+  padding: 2rem 2rem 2rem 5rem;
+
+  .router-outlet-content{
+    padding-left: 2rem;
+  }
+}
+//to fix margin
+ .mdc-list-item--with-leading-icon .mdc-list-item__start {
+  margin-right: 1rem;
+}
