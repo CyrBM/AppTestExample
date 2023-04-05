@@ -1,0 +1,25 @@
+@use '@angular/material' as mat;
+
+.field-container {
+  padding: 2rem;
+  display: flex;
+  flex-direction: column;
+
+  @include mat.elevation(2);
+
+  mat-form-field {
+    padding: 1rem;
+  }
+
+  mat-form-field:not(:first-of-type) {
+    padding-top: 0;
+  }
+
+  mat-form-field:nth-of-type(3) {
+    margin-top: 2rem;
+  }
+
+  mat-checkbox {
+    margin-left: 0.5rem;
+  }
+}

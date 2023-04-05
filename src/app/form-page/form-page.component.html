@@ -1,0 +1,48 @@
+<h3>Formulaire</h3>
+
+<form [formGroup]="formGroup">
+  <div class="field-container">
+    <mat-form-field appearance="fill">
+      <mat-label>Nom</mat-label>
+      <input matInput formControlName="name" />
+      <mat-error id="nameError" *ngIf="name.hasError('required')">
+        Veuillez remplir ce champs
+      </mat-error>
+    </mat-form-field>
+
+    <mat-form-field appearance="fill">
+      <mat-label>Date de naissance</mat-label>
+      <input matInput [matDatepicker]="picker" formControlName="birthdate" />
+      <mat-datepicker-toggle
+        matIconSuffix
+        [for]="picker"></mat-datepicker-toggle>
+      <mat-datepicker #picker></mat-datepicker>
+      <mat-error id="birthdateError" *ngIf="birthdate.hasError('required')">
+        Veuillez saisir une date de naissance
+      </mat-error>
+    </mat-form-field>
+
+    <mat-checkbox formControlName="advancedForm">
+      {{ advancedFormControl.value ? 'Afficher' : 'Cacher' }} le formulaire
+      avancé
+    </mat-checkbox>
+
+    <ng-container *ngIf="advancedFormControl.value">
+      <mat-form-field appearance="fill">
+        <mat-label>Email</mat-label>
+        <input matInput formControlName="email" type="email" />
+        <mat-error id="emailError" *ngIf="email.hasError('required')">
+          Veuillez saisir une adresse email
+        </mat-error>
+      </mat-form-field>
+
+      <mat-form-field appearance="fill">
+        <mat-label>Téléphone</mat-label>
+        <input matInput formControlName="phone" type="tel" />
+        <mat-error id="phoneError" *ngIf="email.hasError('required')">
+          Veuillez saisir un numéro de téléphone
+        </mat-error>
+      </mat-form-field>
+    </ng-container>
+  </div>
+</form>
