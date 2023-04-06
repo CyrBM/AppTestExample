@@ -9,13 +9,20 @@ import {
 } from 'ng-mocks';
 import { FormControl, ReactiveFormsModule } from '@angular/forms';
 import { MockFeatures } from '../../tests/mocks/features';
-import { UserApiService } from './shared/services/user-api.service';
+import { UserApiService } from '../shared/services/user-api.service';
+import { MockUsers } from '../../tests/mocks/users';
+import { of } from 'rxjs';
 
 describe('FormPageComponent', () => {
   let fixture: MockedComponentFixture<FormPageComponent>;
   const serviceSpy = jasmine.createSpyObj('userApiServiceSpy', ['saveUser']);
+  serviceSpy.saveUser.and.returnValue(of());
 
-  beforeEach(() => MockBuilder(FormPageComponent).keep(ReactiveFormsModule).provide({provide: UserApiService, useValue: serviceSpy}));
+  beforeEach(() =>
+    MockBuilder(FormPageComponent)
+      .keep(ReactiveFormsModule)
+      .provide({ provide: UserApiService, useValue: serviceSpy })
+  );
 
   beforeEach(() => {
     fixture = MockRender(FormPageComponent);
@@ -111,6 +118,13 @@ describe('FormPageComponent', () => {
         fixture.detectChanges();
       });
 
+      it('should remove advanced form fields if uncheck the checkbox', () => {
+        ngMocks.change('[formControlName="advancedForm"]', false);
+        fixture.detectChanges();
+        expect(ngMocks.find('[formControlName="email"]', null)).toBeNull();
+        expect(ngMocks.find('[formControlName="phone"]', null)).toBeNull();
+      });
+
       it('should be valid', () => {
         ngMocks.change('[formControlName="name"]', 'test');
         ngMocks.change('[formControlName="birthdate"]', new Date('2020-11-11'));
@@ -194,7 +208,12 @@ describe('FormPageComponent', () => {
         ngMocks.trigger('button', 'click');
         fixture.detectChanges();
 
-        expect(serviceSpy.saveUser).toHaveBeenCalledWith( {name: 'test', birthdate: '11/11/2020', phone: undefined, email: undefined});
+        expect(serviceSpy.saveUser).toHaveBeenCalledWith({
+          name: 'test',
+          birthdate: '11/11/2020',
+          phone: undefined,
+          email: undefined,
+        });
       });
     });
   });

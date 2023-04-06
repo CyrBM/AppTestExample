@@ -4,6 +4,18 @@
       "name": "User1",
       "birthdate": "15/04/2023",
       "id": 1
+    },
+    {
+      "name": "hgfhfgh",
+      "birthdate": "14/04/2023",
+      "id": 2
+    },
+    {
+      "name": "Test2",
+      "birthdate": "13/04/2023",
+      "email": "mùonte@gfdgdf.fr",
+      "phone": "0658456787",
+      "id": 3
     }
   ]
 }

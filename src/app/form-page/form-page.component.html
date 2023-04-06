@@ -39,16 +39,14 @@
       <mat-form-field appearance="fill">
         <mat-label>Téléphone</mat-label>
         <input matInput formControlName="phone" type="tel" />
-        <mat-error id="phoneError" *ngIf="email.hasError('required')">
+        <mat-error id="phoneError" *ngIf="phone.hasError('required')">
           Veuillez saisir un numéro de téléphone
         </mat-error>
       </mat-form-field>
     </ng-container>
   </div>
 
-  <button
-    mat-button
-    type="submit"
-    color="primary"
-    (click)="submitForm()">Sauvegarder</button>
+  <button mat-button type="submit" color="primary" (click)="submitForm()">
+    Sauvegarder
+  </button>
 </form>

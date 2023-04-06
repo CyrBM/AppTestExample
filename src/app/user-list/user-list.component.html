@@ -1,0 +1,12 @@
+<h3>Liste des utilisateurs</h3>
+
+<mat-list>
+  <mat-list-item *ngFor="let user of users$ | async">
+    <mat-icon matListItemIcon>perm_identity</mat-icon>
+    <p matListItemTitle>{{ user.name }}</p>
+    <p matListItemLine>DDN: {{ user.birthdate }}</p>
+    <p *ngIf="!!user.phone" matListItemLine>TEL: {{ user.phone }}</p>
+    <p *ngIf="!!user.email" matListItemLine>EMAIL: {{ user.email }}</p>
+  </mat-list-item>
+  <mat-divider></mat-divider>
+</mat-list>

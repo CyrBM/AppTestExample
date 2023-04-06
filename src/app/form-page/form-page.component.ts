@@ -20,7 +20,7 @@ import { MatIconModule } from '@angular/material/icon';
 import { MatCheckboxModule } from '@angular/material/checkbox';
 import { UntilDestroy, untilDestroyed } from '@ngneat/until-destroy';
 import { MatButtonModule } from '@angular/material/button';
-import { UserApiService } from './shared/services/user-api.service';
+import { UserApiService } from '../shared/services/user-api.service';
 import { User } from '../shared/models/user.model';
 
 @UntilDestroy()
@@ -98,19 +98,14 @@ export class FormPageComponent implements OnInit {
 
   submitForm(): void {
     if (this.formGroup.valid) {
-      const birthdate =  this.formGroup.value.birthdate as Date;
+      const birthdate = this.formGroup.value.birthdate as Date;
       const user: User = {
         name: this.formGroup.value.name as string,
         birthdate: new Date(birthdate).toLocaleDateString(),
         email: this.formGroup.value?.email as string,
         phone: this.formGroup.value?.phone as string,
       };
-      this.userService
-        .saveUser(user)
-        .pipe(untilDestroyed(this))
-        .subscribe(() => {
-          console.log('Todo implementer une snackbar');
-        });
+      this.userService.saveUser(user).pipe(untilDestroyed(this)).subscribe();
     } else {
       this.formGroup.markAllAsTouched();
     }
