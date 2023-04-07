@@ -6,7 +6,7 @@ import {
   ReactiveFormsModule,
   Validators,
 } from '@angular/forms';
-import { FormModel } from './shared/form.model';
+import { FormModel } from './shared/models/form.model';
 import { MatFormFieldModule } from '@angular/material/form-field';
 import { MatInputModule } from '@angular/material/input';
 import { MatDatepickerModule } from '@angular/material/datepicker';
@@ -19,6 +19,9 @@ import { MatButtonToggleModule } from '@angular/material/button-toggle';
 import { MatIconModule } from '@angular/material/icon';
 import { MatCheckboxModule } from '@angular/material/checkbox';
 import { UntilDestroy, untilDestroyed } from '@ngneat/until-destroy';
+import { MatButtonModule } from '@angular/material/button';
+import { UserApiService } from '../shared/services/user-api.service';
+import { User } from '../shared/models/user.model';
 
 @UntilDestroy()
 @Component({
@@ -34,6 +37,7 @@ import { UntilDestroy, untilDestroyed } from '@ngneat/until-destroy';
     MatButtonToggleModule,
     MatIconModule,
     MatCheckboxModule,
+    MatButtonModule,
   ],
   providers: [
     { provide: MAT_LUXON_DATE_ADAPTER_OPTIONS, useValue: { useUtc: true } },
@@ -43,6 +47,7 @@ import { UntilDestroy, untilDestroyed } from '@ngneat/until-destroy';
 })
 export class FormPageComponent implements OnInit {
   private readonly fb = inject(FormBuilder);
+  private readonly userService = inject(UserApiService);
 
   formGroup = this.fb.group<FormModel>({
     birthdate: new FormControl(null, { validators: [Validators.required] }),
@@ -89,5 +94,20 @@ export class FormPageComponent implements OnInit {
 
   get phone(): FormControl {
     return this.formGroup.get('phone') as FormControl;
+  }
+
+  submitForm(): void {
+    if (this.formGroup.valid) {
+      const birthdate = this.formGroup.value.birthdate as Date;
+      const user: User = {
+        name: this.formGroup.value.name as string,
+        birthdate: new Date(birthdate).toLocaleDateString(),
+        email: this.formGroup.value?.email as string,
+        phone: this.formGroup.value?.phone as string,
+      };
+      this.userService.saveUser(user).pipe(untilDestroyed(this)).subscribe();
+    } else {
+      this.formGroup.markAllAsTouched();
+    }
   }
 }

@@ -7,13 +7,22 @@ import {
   MockRender,
   ngMocks,
 } from 'ng-mocks';
-import { ReactiveFormsModule } from '@angular/forms';
+import { FormControl, ReactiveFormsModule } from '@angular/forms';
 import { MockFeatures } from '../../tests/mocks/features';
+import { UserApiService } from '../shared/services/user-api.service';
+import { MockUsers } from '../../tests/mocks/users';
+import { of } from 'rxjs';
 
 describe('FormPageComponent', () => {
   let fixture: MockedComponentFixture<FormPageComponent>;
+  const serviceSpy = jasmine.createSpyObj('userApiServiceSpy', ['saveUser']);
+  serviceSpy.saveUser.and.returnValue(of());
 
-  beforeEach(() => MockBuilder(FormPageComponent).keep(ReactiveFormsModule));
+  beforeEach(() =>
+    MockBuilder(FormPageComponent)
+      .keep(ReactiveFormsModule)
+      .provide({ provide: UserApiService, useValue: serviceSpy })
+  );
 
   beforeEach(() => {
     fixture = MockRender(FormPageComponent);
@@ -109,11 +118,18 @@ describe('FormPageComponent', () => {
         fixture.detectChanges();
       });
 
+      it('should remove advanced form fields if uncheck the checkbox', () => {
+        ngMocks.change('[formControlName="advancedForm"]', false);
+        fixture.detectChanges();
+        expect(ngMocks.find('[formControlName="email"]', null)).toBeNull();
+        expect(ngMocks.find('[formControlName="phone"]', null)).toBeNull();
+      });
+
       it('should be valid', () => {
         ngMocks.change('[formControlName="name"]', 'test');
         ngMocks.change('[formControlName="birthdate"]', new Date('2020-11-11'));
-        ngMocks.change('[formControlName="phone"]', new Date('0606060606'));
-        ngMocks.change('[formControlName="email"]', new Date('email@email.fr'));
+        ngMocks.change('[formControlName="phone"]', '0606060606');
+        ngMocks.change('[formControlName="email"]', 'email@email.fr');
         fixture.detectChanges();
         expect(fixture.componentInstance.formGroup.valid).toBeTrue();
       });
@@ -164,6 +180,39 @@ describe('FormPageComponent', () => {
           expect(
             ngMocks.formatText(ngMocks.find('mat-error#phoneError'))
           ).toEqual('Veuillez saisir un numéro de téléphone');
+        });
+      });
+    });
+
+    describe('Submit button', () => {
+      it('should mark as touched when form is invalid', () => {
+        expect(fixture.componentInstance.name.touched).toBeFalse();
+        expect(fixture.componentInstance.birthdate.touched).toBeFalse();
+        expect(
+          fixture.componentInstance.advancedFormControl.touched
+        ).toBeFalse();
+
+        ngMocks.trigger('button', 'click');
+        fixture.detectChanges();
+
+        expect(fixture.componentInstance.name.touched).toBeTrue();
+        expect(fixture.componentInstance.birthdate.touched).toBeTrue();
+        expect(
+          fixture.componentInstance.advancedFormControl.touched
+        ).toBeTrue();
+      });
+
+      it('should call the service to save user date', () => {
+        ngMocks.change('[formControlName="name"]', 'test');
+        ngMocks.change('[formControlName="birthdate"]', new Date('11/11/2020'));
+        ngMocks.trigger('button', 'click');
+        fixture.detectChanges();
+
+        expect(serviceSpy.saveUser).toHaveBeenCalledWith({
+          name: 'test',
+          birthdate: '11/11/2020',
+          phone: undefined,
+          email: undefined,
         });
       });
     });
